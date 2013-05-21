@@ -1,5 +1,6 @@
 from numpy import *
 from kohonen import *
+from model import *
 
 X = genfromtxt('iris.data', delimiter=',', usecols=(0,1,2,3))
 y = genfromtxt('iris.data', delimiter=',', usecols=(4))
@@ -14,5 +15,7 @@ b = 1
 for i in xrange(len(X.T)):
 	X.T[i] = (X.T[i] - min_v[i] * (b - a)) / (max_v[i] - min_v[i])
 
-k = Kohonen(H=3)
-print k.cluster(X,y)
+k = Kohonen(H=30)
+Cik = k.cluster(X)
+print Cik
+#TSK(Cik)
