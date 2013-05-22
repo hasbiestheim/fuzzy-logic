@@ -15,8 +15,17 @@ b = 1
 for i in xrange(len(X.T)):
 	X.T[i] = (X.T[i] - min_v[i] * (b - a)) / (max_v[i] - min_v[i])
 
-k = Kohonen(H=20)
-Cik = k.cluster(X)
-print Cik
+#k = Kohonen(H=30)
+#Cik = k.cluster(X)
+Cik = genfromtxt('valid_classes.txt', delimiter=',')
 tsk = TSK(Cik, X, y)
-print tsk.result(X[120,:])
+print tsk.Result(X[120,:])
+#print tsk.Gauss(X[148,:])
+
+#print reduce(lambda x,y: x+y, [tsk.Err(x,y) for x in X])
+
+tsk.tune(X,y)
+#print tsk.Result(X[120,:])
+#print tsk.Err(X[120,:],y[120])
+
+print sum([tsk.Err(_x,_y) for _x,_y in zip(X,y)]) / len(X)

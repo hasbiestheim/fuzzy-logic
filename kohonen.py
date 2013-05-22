@@ -2,7 +2,7 @@ from numpy import *
 from numpy.random import *
 
 class Kohonen:
-	def __init__(self, H, maxEpoch=10, eps=1e-4, alpha_w=0.2, alpha_r=0.1):
+	def __init__(self, H, maxEpoch=10, eps=1e-4, alpha_w=0.5, alpha_r=0.1):
 		self.__H = H
 		self.__maxEpoch = maxEpoch
 		self.__eps = eps
@@ -11,18 +11,13 @@ class Kohonen:
 
 	def __d(self, x, Ck):
 		#import pdb; pdb.set_trace()
-		return (((ones((len(Ck.T), len(x)))*x).T - Ck) ** 2 ) * self.__Nk / sum(self.__Nk)
+		return sum(((ones((len(Ck.T), len(x)))*x).T - Ck) ** 2, axis=0 ) * self.__Nk / sum(self.__Nk)
 
 	def __argmin(self, x, Cik):
 		d = self.__d(x, Cik)
-		row_min = amin(d, axis=0)
-		row_min_v = argmin(d, axis=0)
-		#import pdb; pdb.set_trace()
-		w = argmin(row_min)
-		d[row_min_v[w], w] = float('inf')
-		row_min = amin(d, axis=0)
-		#import pdb; pdb.set_trace()
-		r = argmin(row_min)
+		w = argmin(d)
+		d[w] = float('inf')
+		r = argmin(d)
 		return w,r
 
 	def cluster(self, X):
@@ -43,5 +38,4 @@ class Kohonen:
 			#import pdb; pdb.set_trace()
 			if sum((Cik - Cik_old)**2) / self.__H < self.__eps:
 				break;
-		tmp = Cik.T[~(Cik.T > 1).any(1)]
-		return tmp[~(tmp < 0).any(0)].T
+		return Cik[:,(Cik > 0).all(0)*(Cik < 1).all(0)]
