@@ -17,15 +17,18 @@ for i in xrange(len(X.T)):
 
 #k = Kohonen(H=30)
 #Cik = k.cluster(X)
-Cik = genfromtxt('valid_classes.txt', delimiter=',')
+Cik = genfromtxt('valid_classes2.txt', delimiter=',').T
 tsk = TSK(Cik, X, y)
-print tsk.Result(X[120,:])
+#print tsk.Result(X[120,:])
 #print tsk.Gauss(X[148,:])
 
 #print reduce(lambda x,y: x+y, [tsk.Err(x,y) for x in X])
 
 tsk.tune(X,y)
-#print tsk.Result(X[120,:])
+#print tsk.Answ(X[120,:], [0, 1, 2])
 #print tsk.Err(X[120,:],y[120])
 
-print sum([tsk.Err(_x,_y) for _x,_y in zip(X,y)]) / len(X)
+tmp = array([tsk.Result(_x) for _x,_y in zip(X,y)])
+tmptmp = around(tmp) - y
+print float(len(tmptmp[tmptmp == 0])) / len(y)
+#print len(nonzero(tmp))/len(X)

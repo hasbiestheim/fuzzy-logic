@@ -2,7 +2,7 @@ from scipy.spatial.distance import *
 from numpy import *
 
 class TSK:
-	def __init__(self, Cik, X, Y, eps=1e-4, r=1.5):
+	def __init__(self, Cik, X, Y, eps=1e-4, r=3.41):
 		self.__Cik = Cik
 		self.__r = r
 		self.__eps = eps
@@ -13,7 +13,7 @@ class TSK:
 		#import pdb; pdb.set_trace()
 		self.__aik = zeros((len(Cik.T), len(X.T)))
 		for i in xrange(len(Cik.T)):
-			self.__aik[i] = (Cik[:,i] - Cik[:,indexes[i]]) ** 2 / self.__r
+			self.__aik[i] = (sum((Cik[:,i] - Cik[:,indexes[i]]) ** 2) / self.__r) * ones(len(X.T))
 		self.__aik = self.__aik.copy().T
 		#import pdb; pdb.set_trace()
 		self.__bok = zeros(len(Cik.T))
@@ -23,6 +23,7 @@ class TSK:
 				up += self.__alphak(x, i)*y
 				down += self.__alphak(x, i)
 			self.__bok[i] = up / down		
+
 		#import pdb; pdb.set_trace()
 
 	def __muik(self, x, k):
@@ -79,7 +80,7 @@ class TSK:
 			result += self.Err(x,y)
 		return result / len(X)
 
-	def tune(self, X, Y, N=100, eta=0.002):
+	def tune(self, X, Y, N=50, eta=0.1):
 		ind = 0
 		while self.J(X,Y) > self.__eps and ind < N:
 			for x,y in zip(X,Y):
