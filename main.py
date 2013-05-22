@@ -15,6 +15,8 @@ b = 1
 for i in xrange(len(X.T)):
 	X.T[i] = (X.T[i] - min_v[i] * (b - a)) / (max_v[i] - min_v[i])
 
-k = Kohonen(H=3)
+k = Kohonen(H=20)
 Cik = k.cluster(X)
-TSK(Cik,X, y)
+print Cik
+tsk = TSK(Cik, X, y)
+print tsk.result(X[120,:])
